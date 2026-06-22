@@ -9,7 +9,7 @@ DB_CONNECTION: Final[str] = 'mysql+pymysql'
 DB_USER:       Final[str] = 'root'
 DB_PASSWORD:   Final[str] = ''
 DB_HOST:       Final[str] = 'localhost'
-DB_PORT:       Final[str] = '3306'
+DB_PORT:       Final[str] = '3307'
 DB_NAME:       Final[str] = 'biblioteca_senai'
 
 app = Flask(__name__)

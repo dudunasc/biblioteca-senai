@@ -32,35 +32,25 @@ class Livro(db.Model):
         lazy=True
     )
 
-
 class Emprestimo(db.Model):
     id               = db.Column(db.Integer, primary_key=True)
     data_emprestimo  = db.Column(db.Date, nullable=False)
     data_prevista    = db.Column(db.Date, nullable=False)
     data_devolucao   = db.Column(db.Date)
-
     status           = db.Column(db.String(20), nullable=False, default='ATIVO')
-
     usuario_id       = db.Column(db.Integer, db.ForeignKey('usuario.id'),
-        nullable=False
-    )
+        nullable=False)
     livro_id         = db.Column(db.Integer, db.ForeignKey('livro.id'),
-        nullable=False
-    )
-
+        nullable=False)
 
 class Solicitacao(db.Model):
     id                = db.Column(db.Integer, primary_key=True)
     titulo_livro      = db.Column(db.String(100), nullable=False)
     autor             = db.Column(db.String(50))
     observacao        = db.Column(db.Text)
-
     status            = db.Column(db.String(20), nullable=False,
-        default='PENDENTE'
-    )
+        default='PENDENTE')
     data_solicitacao  = db.Column(db.DateTime,
-        default=datetime.utcnow
-    )
+        default=datetime.utcnow)
     professor_id      = db.Column(db.Integer, db.ForeignKey('usuario.id'),
-        nullable=False
-    )
+        nullable=False)

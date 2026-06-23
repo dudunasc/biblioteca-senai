@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div style="max-width: 600px; margin: 0 auto;">
+  <form method="POST">
+    <h2> Cadastrar Novo Livro</h2>
+
+    {{ form.hidden_tag() }}
+
+    <label>{{ form.isbn.label }}</label>
+    {{ form.isbn() }}
+
+    <label>{{ form.titulo.label }}</label>
+    {{ form.titulo() }}
+
+    <label>{{ form.autor.label }}</label>
+    {{ form.autor() }}
+
+    <label>{{ form.categoria.label }}</label>
+    {{ form.categoria() }}
+
+    <label>{{ form.editora.label }}</label>
+    {{ form.editora() }}
+
+    <label>{{ form.ano.label }}</label>
+    {{ form.ano() }}
+
+    <label>{{ form.quantidade_total.label }}</label>
+    {{ form.quantidade_total() }}
+
+    {{ form.submit(value="Cadastrar Livro") }}
+  </form>
+</div>
+
+{% endblock %}

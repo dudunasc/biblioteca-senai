@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2> Meus Empréstimos</h2>
+
+{% if emprestimos %}
+    <div style="overflow-x: auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th> Livro</th>
+                    <th> Usuário</th>
+                    <th> Empréstimo</th>
+                    <th> Devolução Prevista</th>
+                    <th> Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for emp in emprestimos %}
+                    <tr>
+                        <td>{{ emp.livro.titulo }}</td>
+                        <td>{{ emp.usuario.nome if current_user.perfil == 'Administrador' else 'Você' }}</td>
+                        <td>{{ emp.data_emprestimo.strftime('%d/%m/%Y') }}</td>
+                        <td>{{ emp.data_prevista.strftime('%d/%m/%Y') }}</td>
+                        <td>
+                            <span class="status-{{ emp.status.lower() }}">
+                                {{ emp.status }}
+                            </span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="card" style="text-align: center;">
+        <p style="font-size: 1.2rem; color: #7f8c8d;"> Nenhum empréstimo encontrado.</p>
+    </div>
+{% endif %}
+
+{% endblock %}

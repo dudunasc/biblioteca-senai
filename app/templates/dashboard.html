@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="dashboard">
+    <h2> Bem-vindo, {{ usuario.nome }}!</h2>
+    <p style="font-size: 1.1rem; color: #555; margin-bottom: 2rem;">
+        <strong> Perfil:</strong> 
+        {% if usuario.perfil == 'Administrador' %}
+            <span style="background: #e74c3c; color: white; padding: 0.3rem 0.6rem; border-radius: 4px;"> Administrador</span>
+        {% elif usuario.perfil == 'Professor' %}
+            <span style="background: #3498db; color: white; padding: 0.3rem 0.6rem; border-radius: 4px;"> Professor</span>
+        {% else %}
+            <span style="background: #27ae60; color: white; padding: 0.3rem 0.6rem; border-radius: 4px;"> Aluno</span>
+        {% endif %}
+    </p>
+
+    <div class="stats">
+        <div class="stat-card">
+            <h3>{{ total_livros }}</h3>
+            <p> Livros no Acervo</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>{{ total_emprestimos }}</h3>
+            <p> Empréstimos Ativos</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>{{ total_solicitacoes }}</h3>
+            <p> Solicitações Pendentes</p>
+        </div>
+    </div>
+
+    <div class="quick-actions">
+        <h3> Ações Rápidas</h3>
+        <ul>
+            <li><a href="{{ url_for('listar_livros') }}"> Ver Acervo</a></li>
+            <li><a href="{{ url_for('nova_solicitacao') }}"> Solicitar Livro</a></li>
+            <li><a href="{{ url_for('listar_emprestimos') }}"> Meus Empréstimos</a></li>
+            {% if usuario.perfil == 'Administrador' %}
+                <li><a href="{{ url_for('novo_emprestimo') }}"> Registrar Empréstimo</a></li>
+                <li><a href="{{ url_for('cadastro_livro') }}"> Cadastrar Livro</a></li>
+                <li><a href="{{ url_for('cadastro_usuario') }}"> Cadastrar Usuário</a></li>
+                <li><a href="{{ url_for('listar_solicitacoes') }}"> Ver Solicitações</a></li>
+                <li><a href="{{ url_for('relatorio') }}"> Ver Relatório</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+
+{% endblock %}

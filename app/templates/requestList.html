@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2> Solicitações de Livros</h2>
+
+{% if solicitacoes %}
+    <div style="overflow-x: auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th> Livro Solicitado</th>
+                    <th> Autor</th>
+                    <th> Solicitante</th>
+                    <th> Data da Solicitação</th>
+                    <th> Status</th>
+                    <th> Observação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sol in solicitacoes %}
+                    <tr>
+                        <td>{{ sol.titulo_livro }}</td>
+                        <td>{{ sol.autor or '-' }}</td>
+                        <td>{{ sol.usuario.nome if sol.usuario else 'Usuário Removido' }}</td>
+                        <td>{{ sol.data_solicitacao.strftime('%d/%m/%Y %H:%M') }}</td>
+                        <td>
+                            <span class="status-{{ sol.status.lower() }}">
+                                {{ sol.status }}
+                            </span>
+                        </td>
+                        <td>{{ sol.observacao or '-' }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="card" style="text-align: center;">
+        <p style="font-size: 1.2rem; color: #7f8c8d;"> Nenhuma solicitação encontrada.</p>
+    </div>
+{% endif %}
+
+{% endblock %}

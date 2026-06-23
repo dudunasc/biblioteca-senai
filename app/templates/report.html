@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2> Relatório de Livros por Categoria</h2>
+
+{% if dados %}
+    <div style="overflow-x: auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th> Categoria</th>
+                    <th> Total de Livros</th>
+                    <th> Visualização</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set max_total = dados|map(attribute='total')|max %}
+                {% for item in dados %}
+                    {% set percentage = (item.total / max_total * 100)|int %}
+                    <tr>
+                        <td><strong>{{ item.categoria }}</strong></td>
+                        <td style="font-weight: bold; font-size: 1.1rem; color: #3498db;">{{ item.total }}</td>
+                        <td>
+                            <div style="background: #ecf0f1; border-radius: 20px; overflow: hidden; height: 30px; display: flex; align-items: center;">
+                                <div style="background: linear-gradient(90deg, #3498db, #2980b9); width: {{ percentage }}%; height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 0.85rem;">
+                                    {% if percentage > 10 %}{{ percentage }}%{% endif %}
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="card" style="margin-top: 2rem;">
+        <h3> Resumo</h3>
+        <p><strong>Total de Categorias:</strong> {{ dados|length }}</p>
+        <p><strong>Total de Livros:</strong> {{ dados|map(attribute='total')|sum }}</p>
+    </div>
+{% else %}
+    <div class="card" style="text-align: center;">
+        <p style="font-size: 1.2rem; color: #7f8c8d;"> Nenhum relatório disponível.</p>
+    </div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div style=\"max-width: 600px; margin: 0 auto;\">
+  <div class=\"card\">
+    <h2> {{ livro.titulo }}</h2>
+
+    <div style=\"margin: 1.5rem 0; padding: 1.5rem; background: #f8f9fa; border-radius: 8px;\">
+      <p><strong> ISBN:</strong> {{ livro.isbn }}</p>
+      <p><strong> Autor:</strong> {{ livro.autor }}</p>
+      <p><strong> Categoria:</strong> {{ livro.categoria }}</p>
+      <p><strong> Editora:</strong> {{ livro.editora }}</p>
+      {% if livro.ano %}
+        <p><strong> Ano de Publicação:</strong> {{ livro.ano }}</p>
+      {% endif %}
+    </div>
+
+    <div style=\"margin: 1.5rem 0; padding: 1.5rem; background: #e8f5e9; border-left: 4px solid #27ae60; border-radius: 8px;\">
+      <p style=\"font-size: 1.3rem; color: #27ae60; font-weight: bold; margin: 0;\">
+         Disponíveis: {{ livro.quantidade_disponivel }} de {{ livro.quantidade_total }}
+      </p>
+    </div>
+
+
+  </div>
+</div>
+
+{% endblock %}

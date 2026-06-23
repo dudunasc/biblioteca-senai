@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div style="max-width: 600px; margin: 0 auto;">
+  <form method="POST">
+    <h2> Cadastrar Novo Usuário</h2>
+
+    {{ form.hidden_tag() }}
+
+    <label>{{ form.nome.label }}</label>
+    {{ form.nome() }}
+
+    <label>{{ form.email.label }}</label>
+    {{ form.email() }}
+
+    <label>{{ form.senha.label }}</label>
+    {{ form.senha() }}
+
+    <label>{{ form.perfil.label }}</label>
+    {{ form.perfil() }}
+
+    {{ form.submit(value="Cadastrar Usuário") }}
+  </form>
+</div>
+
+{% endblock %}

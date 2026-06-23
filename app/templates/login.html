@@ -1,21 +1,21 @@
 {% extends 'base.html' %}
-{% block title %}Login - BiblioTech{% endblock %}
 {% block content %}
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <h3>Login</h3>
-      <form method="post" action="{{ url_for('login') }}">
-        <div class="mb-3">
-          <label class="form-label">Email</label>
-          <input type="email" name="email" class="form-control" required>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Senha</label>
-          <input type="password" name="senha" class="form-control" required>
-        </div>
-        <button class="btn btn-primary">Entrar</button>
-      </form>
-      <p class="mt-3">Ainda não tem conta? <a href="{{ url_for('register') }}">Cadastre-se aqui</a></p>
-    </div>
-  </div>
+<div style="max-width: 450px; margin: 3rem auto;">
+  <form method="post" action="{{ url_for('login') }}">
+    <h2> Login</h2>
+    <p style="color: #7f8c8d; margin-bottom: 1.5rem;">Acesse sua conta na Biblioteca </p>
+    
+    <label for="email"> Email</label>
+    <input type="email" id="email" name="email" required>
+    
+    <label for="senha"> Senha</label>
+    <input type="password" id="senha" name="senha" required>
+    
+    <input type="submit" value="Entrar">
+    
+    <p style="text-align: center; margin-top: 1.5rem; color: #7f8c8d;">
+      Ainda não tem conta? <a href="{{ url_for('register') }}">Cadastre-se aqui</a>
+    </p>
+  </form>
+</div>
 {% endblock %}

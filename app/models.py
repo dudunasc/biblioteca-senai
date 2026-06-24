@@ -32,7 +32,6 @@ class Livro(db.Model):
         lazy=True
     )
 
-
 class Emprestimo(db.Model):
     id               = db.Column(db.Integer, primary_key=True)
     data_emprestimo  = db.Column(db.Date, nullable=False)

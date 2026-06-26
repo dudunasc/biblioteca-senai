@@ -1,7 +1,6 @@
 from app.models import Usuario
 from flask_login import current_user
 
-
 class ControllerUser:
 
     @staticmethod
@@ -23,3 +22,5 @@ class ControllerUser:
     @staticmethod
     def getAllUsers():
         return Usuario.query.all()
+    
+    

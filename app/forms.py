@@ -23,11 +23,7 @@ from app.models import (
 
 from app import db, bcrypt
 
-
-# ==========================
-# LOGIN
-# ==========================
-
+#LOGIN
 class LoginForm(FlaskForm):
 
     email = StringField(
@@ -62,10 +58,7 @@ class LoginForm(FlaskForm):
         return None
 
 
-# ==========================
-# USUÁRIO
-# ==========================
-
+#USUÁRIO
 class UsuarioForm(FlaskForm):
 
     nome = StringField(
@@ -119,10 +112,7 @@ class UsuarioForm(FlaskForm):
         return user
 
 
-# ==========================
-# LIVRO
-# ==========================
-
+#LIVRO
 class LivroForm(FlaskForm):
 
     isbn = StringField(
@@ -200,7 +190,6 @@ class LivroForm(FlaskForm):
 
 
 #EMPRÉSTIMO
-
 class EmprestimoForm(FlaskForm):
 
     usuario_id = SelectField(

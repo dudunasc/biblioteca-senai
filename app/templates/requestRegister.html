@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Solicitar Aquisição</h2>
+
+<form method="POST">
+
+    {{ form.hidden_tag() }}
+
+    {{ form.titulo_livro.label }}
+    {{ form.titulo_livro() }}
+
+    {{ form.autor.label }}
+    {{ form.autor() }}
+
+    {{ form.observacao.label }}
+    {{ form.observacao() }}
+
+    {{ form.submit() }}
+
+</form>
+
+{% endblock %}

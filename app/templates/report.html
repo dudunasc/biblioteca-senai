@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Relatório</h2>
+
+<table>
+
+    <tr>
+        <th>Categoria</th>
+        <th>Total</th>
+    </tr>
+
+    {% for item in dados %}
+
+    <tr>
+        <td>{{ item.categoria }}</td>
+        <td>{{ item.total }}</td>
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+{% endblock %}

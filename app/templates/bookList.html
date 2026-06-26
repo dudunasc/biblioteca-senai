@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Acervo</h2>
+
+{% for livro in livros %}
+
+<div class="card">
+
+    <h3>{{ livro.titulo }}</h3>
+
+    <p>Autor: {{ livro.autor }}</p>
+
+    <p>Categoria: {{ livro.categoria }}</p>
+
+    <a href="{{ url_for('visualizar_livro', id=livro.id) }}">
+        Ver detalhes
+    </a>
+
+</div>
+
+{% endfor %}
+
+{% endblock %}

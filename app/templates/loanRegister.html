@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Novo Empréstimo</h2>
+
+<form method="POST">
+
+    {{ form.hidden_tag() }}
+
+    {{ form.usuario_id.label }}
+    {{ form.usuario_id() }}
+
+    {{ form.livro_id.label }}
+    {{ form.livro_id() }}
+
+    {{ form.submit() }}
+
+</form>
+
+{% endblock %}

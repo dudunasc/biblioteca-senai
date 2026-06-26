@@ -39,7 +39,7 @@ from app.controllers.controllerEmprestimo import ControllerEmprestimo
 from app.controllers.controllerSolicitacao import ControllerSolicitacao
 
 
-HOME_PAGE:               Final[str] = "index.html"
+HOME_PAGE:               Final[str] = "dashboard.html"
 PAGE_LOGIN:              Final[str] = "login.html"
 
 PAGE_USER_REGISTER:      Final[str] = "userRegister.html"
@@ -60,7 +60,7 @@ PAGE_REQUEST_LIST:       Final[str] = "requestList.html"
 PAGE_REPORT:             Final[str] = "report.html"
 
 
-#funcao auxiliar
+# ----- funcao auxiliar ----- 
 def checkForm(form):
     if request.method == 'POST':
         form.validate()
@@ -70,12 +70,24 @@ def checkForm(form):
                 flash(msg[0], 'danger')
 
 
-#login
-@app.route('/', methods=['GET', 'POST'])
+# ----- Dashboard Público ----- 
+@app.route('/')
 def index():
 
+    return render_template(
+        HOME_PAGE
+    )
+
+
+# ----- Login ----- 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+
     if ControllerUser.isLoged():
-        return render_template(HOME_PAGE)
+
+        return redirect(
+            url_for('index')
+        )
 
     form = LoginForm()
 
@@ -86,6 +98,7 @@ def index():
         user = form.login()
 
         if user:
+
             login_user(user)
 
             flash(
@@ -93,7 +106,23 @@ def index():
                 'success'
             )
 
-            return redirect(url_for('index'))
+            if user.perfil == 'ADMIN':
+
+                return redirect(
+                    url_for('index')
+                )
+
+            elif user.perfil == 'PROFESSOR':
+
+                return redirect(
+                    url_for('painel_professor')
+                )
+
+            elif user.perfil == 'ALUNO':
+
+                return redirect(
+                    url_for('painel_aluno')
+                )
 
         flash(
             'Email ou senha inválidos.',
@@ -101,11 +130,40 @@ def index():
         )
 
     return render_template(
-        HOME_PAGE,
+        PAGE_LOGIN,
         form=form
     )
 
-#Logout
+
+# ----- Escolha do Perfil ----- 
+@app.route('/escolher-perfil')
+def escolher_perfil():
+
+    return render_template(
+        'escolher_perfil.html'
+    )
+
+
+# ----- Dashboard Professor ----- 
+@app.route('/professor')
+@login_required
+def painel_professor():
+
+    return render_template(
+        PAGE_TEACHER_PANEL
+    )
+
+
+# ----- Dashboard Aluno ----- 
+@app.route('/aluno')
+@login_required
+def painel_aluno():
+
+    return render_template(
+        PAGE_STUDENT_PANEL
+    )
+
+# ----- Logout ----- 
 @app.route('/usuario/sair')
 @login_required
 def logout():
@@ -121,7 +179,7 @@ def logout():
         url_for('index')
     )
 
-#Cadastro Usuário
+# ----- Cadastro Usuário ----- 
 @app.route('/usuario/cadastro', methods=['GET', 'POST'])
 @login_required
 def cadastrar_usuario():
@@ -159,7 +217,7 @@ def cadastrar_usuario():
         url_for('index')
     )
 
-#Cadastro Livro
+# ----- Cadastro Livro ----- 
 @app.route('/livro/novo', methods=['GET', 'POST'])
 @login_required
 def cadastrar_livro():
@@ -197,7 +255,7 @@ def cadastrar_livro():
         url_for('index')
     )
 
-#Consulta ao acervo
+# ----- Consulta ao acervo ----- 
 @app.route('/livros')
 def listar_livros():
 
@@ -221,7 +279,7 @@ def listar_livros():
         livros=livros
     )
 
-#Detalhes dos livros
+# ----- Detalhes dos livros ----- 
 @app.route('/livro/<int:id>')
 def visualizar_livro(id):
 
@@ -232,7 +290,7 @@ def visualizar_livro(id):
         livro=livro
     )
 
-#Empréstimo
+# ----- Empréstimo ----- 
 @app.route('/emprestimo/novo', methods=['GET', 'POST'])
 @login_required
 def realizar_emprestimo():
@@ -270,7 +328,7 @@ def realizar_emprestimo():
         url_for('index')
     )
 
-#Solicitacao de aquisição
+# ----- Solicitacao de aquisição ----- 
 @app.route('/solicitacao/nova', methods=['GET', 'POST'])
 @login_required
 def solicitar_aquisicao():
@@ -300,7 +358,7 @@ def solicitar_aquisicao():
         form=form
     )
 
-#Relatórios
+# ----- Relatórios ----- 
 @app.route('/relatorio')
 @login_required
 def relatorio():

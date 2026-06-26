@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>{{ livro.titulo }}</h2>
+
+<p><strong>ISBN:</strong> {{ livro.isbn }}</p>
+
+<p><strong>Autor:</strong> {{ livro.autor }}</p>
+
+<p><strong>Categoria:</strong> {{ livro.categoria }}</p>
+
+<p><strong>Editora:</strong> {{ livro.editora }}</p>
+
+<p><strong>Ano:</strong> {{ livro.ano }}</p>
+
+<p>
+    <strong>Disponíveis:</strong>
+    {{ livro.quantidade_disponivel }}
+</p>
+
+{% endblock %}

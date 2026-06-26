@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Cadastrar Livro</h2>
+
+<form method="POST">
+
+    {{ form.hidden_tag() }}
+
+    {{ form.isbn.label }}
+    {{ form.isbn() }}
+
+    {{ form.titulo.label }}
+    {{ form.titulo() }}
+
+    {{ form.autor.label }}
+    {{ form.autor() }}
+
+    {{ form.categoria.label }}
+    {{ form.categoria() }}
+
+    {{ form.editora.label }}
+    {{ form.editora() }}
+
+    {{ form.ano.label }}
+    {{ form.ano() }}
+
+    {{ form.quantidade_total.label }}
+    {{ form.quantidade_total() }}
+
+    {{ form.quantidade_disponivel.label }}
+    {{ form.quantidade_disponivel() }}
+
+    {{ form.submit() }}
+
+</form>
+
+{% endblock %}

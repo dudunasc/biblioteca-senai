@@ -1,0 +1,142 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:linear-gradient(135deg, #0D47A1, #1565C0);
+}
+
+.login-container{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:30px;
+}
+
+.login-card{
+    width:100%;
+    max-width:720px;
+    background:#fff;
+    border-radius:22px;
+    padding:40px;
+    box-shadow:0 15px 35px rgba(0,0,0,.25);
+    text-align:center;
+}
+
+.login-card h1{
+    color:#0D47A1;
+    font-size:42px;
+    margin-bottom:8px;
+}
+
+.login-card p{
+    color:#555;
+    font-size:17px;
+    margin-bottom:30px;
+}
+
+.perfil-options{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:18px;
+    margin-bottom:30px;
+}
+
+.perfil-card{
+    border:2px solid #d9e2f3;
+    background:#f8fafc;
+    color:#0D47A1;
+    border-radius:16px;
+    padding:22px 10px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.perfil-card i{
+    display:block;
+    font-size:42px;
+    margin-bottom:10px;
+}
+
+.perfil-card span{
+    font-size:16px;
+    font-weight:bold;
+}
+
+.perfil-card:hover,
+.perfil-card.active{
+    background:#0D47A1;
+    color:white;
+    border-color:#0D47A1;
+    transform:translateY(-5px);
+}
+
+.form-group{
+    text-align:left;
+    margin-bottom:18px;
+}
+
+.form-group label{
+    display:block;
+    font-weight:bold;
+    color:#333;
+    margin-bottom:8px;
+}
+
+.form-group input{
+    width:100%;
+    padding:14px;
+    border:1px solid #ccc;
+    border-radius:10px;
+    font-size:16px;
+    outline:none;
+}
+
+.form-group input:focus{
+    border-color:#0D47A1;
+}
+
+.btn-login{
+    width:100%;
+    margin-top:10px;
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    background:#0D47A1;
+    color:white;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.btn-login:hover{
+    background:#1565C0;
+}
+
+.voltar{
+    display:inline-block;
+    margin-top:25px;
+    text-decoration:none;
+    color:#0D47A1;
+    font-weight:bold;
+}
+
+.voltar:hover{
+    text-decoration:underline;
+}
+
+@media(max-width:700px){
+    .perfil-options{
+        grid-template-columns:1fr;
+    }
+
+    .login-card{
+        padding:30px 20px;
+    }
+}

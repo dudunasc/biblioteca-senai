@@ -135,14 +135,6 @@ def login():
     )
 
 
-# ----- Escolha do Perfil ----- 
-@app.route('/escolher-perfil')
-def escolherPerfil():
-    return render_template(
-        'escolherPerfil.html'
-    )
-
-
 # ----- Dashboard Professor ----- 
 @app.route('/professor')
 @login_required

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Escolher Perfil</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/escolherPerfil.css') }}">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+
+<section class="perfil-container">
+    <h1>Escolha seu perfil</h1>
+    <p>Selecione como deseja acessar o sistema</p>
+    <div class="perfil-cards">
+        <a href="{{ url_for('login') }}" class="perfil-card">
+            <i class="bi bi-person-gear"></i>
+            <h2>Sou administrador</h2>
+        </a>
+        <a href="{{ url_for('login') }}" class="perfil-card">
+            <i class="bi bi-person-video3"></i>
+            <h2>Sou Professor</h2>
+        </a>
+        <a href="{{ url_for('login') }}" class="perfil-card">
+            <i class="bi bi-mortarboard"></i>
+            <h2>Sou aluno</h2>
+        </a>
+    </div>
+</section>
+</body>
+</html>

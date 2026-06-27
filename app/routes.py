@@ -137,10 +137,9 @@ def login():
 
 # ----- Escolha do Perfil ----- 
 @app.route('/escolher-perfil')
-def escolher_perfil():
-
+def escolherPerfil():
     return render_template(
-        'escolher_perfil.html'
+        'escolherPerfil.html'
     )
 
 

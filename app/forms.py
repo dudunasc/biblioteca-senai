@@ -77,10 +77,19 @@ class UsuarioForm(FlaskForm):
         ]
     )
 
-    senha = PasswordField(
-        'Senha',
+    cpf = StringField(
+        'CPF',
         validators=[
-            DataRequired()
+            DataRequired(),
+            Length(min=14, max=14)
+        ]
+    )
+
+    matricula = StringField(
+        'Matrícula',
+        validators=[
+            DataRequired(),
+            Length(max=20)
         ]
     )
 
@@ -96,14 +105,16 @@ class UsuarioForm(FlaskForm):
     submit = SubmitField('Salvar')
 
     def saveUser(self):
-
         user = Usuario(
             nome=self.nome.data,
             email=self.email.data,
+            cpf=self.cpf.data,
+            matricula=self.matricula.data,
             senha=bcrypt.generate_password_hash(
-                self.senha.data
+                self.matricula.data
             ).decode('utf-8'),
-            perfil=self.perfil.data
+            perfil=self.perfil.data,
+            primeiro_acesso=True
         )
 
         db.session.add(user)

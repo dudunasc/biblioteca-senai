@@ -10,8 +10,11 @@ class Usuario(db.Model, UserMixin):
     id         = db.Column(db.Integer, primary_key=True)
     nome       = db.Column(db.String(50), nullable=False)
     email      = db.Column(db.String(50), nullable=False, unique=True)
+    cpf        = db.Column(db.String(14), nullable=False, unique=True)
+    matricula  = db.Column(db.String(20), nullable=False, unique=True)
     senha      = db.Column(db.String(300), nullable=False)
     perfil     = db.Column(db.String(20), nullable=False)
+    primeiro_acesso = db.Column(db.Boolean, nullable=False, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 

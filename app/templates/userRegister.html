@@ -1,27 +1,117 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="pt-BR">
 
-{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Usuário - ReadFlow</title>
 
-<h2>Cadastrar Usuário</h2>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/userRegister.css') }}">
 
-<form method="POST">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
 
-    {{ form.hidden_tag() }}
+<body>
 
-    {{ form.nome.label }}
-    {{ form.nome() }}
+<div class="page-layout">
+    <aside class="sidebar">
 
-    {{ form.email.label }}
-    {{ form.email() }}
+        <div class="brand">
+            <i class="bi bi-book-half"></i>
+            <h2>ReadFlow</h2>
+        </div>
 
-    {{ form.senha.label }}
-    {{ form.senha() }}
+        <nav class="menu">
 
-    {{ form.perfil.label }}
-    {{ form.perfil() }}
+            <a href="{{ url_for('dashboardAdmin') }}">
+                <i class="bi bi-grid-1x2-fill"></i>
+                Dashboard
+            </a>
 
-    {{ form.submit() }}
+            <a href="{{ url_for('cadastrar_usuario') }}" class="active">
+                <i class="bi bi-people-fill"></i>
+                Usuários
+            </a>
 
-</form>
+            <a href="{{ url_for('cadastrar_livro') }}">
+                <i class="bi bi-book-fill"></i>
+                Livros
+            </a>
 
-{% endblock %}
+            <a href="{{ url_for('realizar_emprestimo') }}">
+                <i class="bi bi-arrow-left-right"></i>
+                Empréstimos
+            </a>
+
+            <a href="{{ url_for('relatorio') }}">
+                <i class="bi bi-bar-chart-fill"></i>
+                Relatórios
+            </a>
+
+        </nav>
+
+        <a href="{{ url_for('logout') }}" class="logout">
+            <i class="bi bi-box-arrow-right"></i>
+            Sair
+        </a>
+
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div>
+                <h1>Cadastrar Usuário</h1>
+                <p>Cadastre alunos, professores e administradores no sistema.</p>
+            </div>
+
+            <div class="user-info">
+                <i class="bi bi-person-circle"></i>
+                <span>{{ current_user.nome }}</span>
+            </div>
+        </header>
+
+        <section class="form-card">
+            <h2>Novo usuário</h2>
+            <form method="POST">
+
+                {{ form.hidden_tag() }}
+
+                <div class="form-group">
+                    {{ form.nome.label }}
+                    {{ form.nome(placeholder="Digite o nome completo") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.email.label }}
+                    {{ form.email(placeholder="Digite o email") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.cpf.label }}
+                    {{ form.cpf(placeholder="000.000.000-00", id="cpf") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.matricula.label }}
+                    {{ form.matricula(placeholder="Digite a matrícula") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.perfil.label }}
+                    {{ form.perfil() }}
+                </div>
+
+                <div class="form-actions">
+                    {{ form.submit(class="btn-submit") }}
+
+                    <a href="{{ url_for('dashboardAdmin') }}" class="btn-cancel">
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </section>
+    </main>
+</div>
+</body>
+</html>

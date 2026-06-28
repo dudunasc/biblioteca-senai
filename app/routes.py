@@ -41,6 +41,7 @@ from app.controllers.controllerSolicitacao import ControllerSolicitacao
 
 HOME_PAGE:               Final[str] = "dashboard.html"
 PAGE_LOGIN:              Final[str] = "login.html"
+PAGE_ADMIN_PANEL:        Final[str] = "dashboardAdmin.html"
 
 PAGE_USER_REGISTER:      Final[str] = "userRegister.html"
 PAGE_USER_LIST:          Final[str] = "userList.html"
@@ -58,6 +59,7 @@ PAGE_REQUEST_REGISTER:   Final[str] = "requestRegister.html"
 PAGE_REQUEST_LIST:       Final[str] = "requestList.html"
 
 PAGE_REPORT:             Final[str] = "report.html"
+PAGE_ADMIN_PANEL:        Final[str] = "dashboardAdmin.html"
 
 
 # ----- funcao auxiliar ----- 
@@ -109,7 +111,7 @@ def login():
             if user.perfil == 'ADMIN':
 
                 return redirect(
-                    url_for('index')
+                    url_for('dashboardAdmin')
                 )
 
             elif user.perfil == 'PROFESSOR':
@@ -133,7 +135,22 @@ def login():
         PAGE_LOGIN,
         form=form
     )
+# ----- Dashboard Admin ----- 
+@app.route('/admin')
+@login_required
+def dashboardAdmin():
 
+    if ControllerUser.checkAdminPermission():
+
+        return render_template(
+            PAGE_ADMIN_PANEL
+        )
+
+    flash('Acesso negado.', 'danger')
+
+    return redirect(
+        url_for('index')
+    )
 
 # ----- Dashboard Professor ----- 
 @app.route('/professor')

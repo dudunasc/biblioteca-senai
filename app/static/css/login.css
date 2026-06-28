@@ -20,10 +20,10 @@ body{
 
 .login-card{
     width:100%;
-    max-width:720px;
+    max-width:760px;
     background:#fff;
     border-radius:22px;
-    padding:40px;
+    padding:42px;
     box-shadow:0 15px 35px rgba(0,0,0,.25);
     text-align:center;
 }
@@ -31,10 +31,10 @@ body{
 .login-card h1{
     color:#0D47A1;
     font-size:42px;
-    margin-bottom:8px;
+    margin-bottom:6px;
 }
 
-.login-card p{
+.subtitulo{
     color:#555;
     font-size:17px;
     margin-bottom:30px;
@@ -44,7 +44,7 @@ body{
     display:grid;
     grid-template-columns:repeat(3, 1fr);
     gap:18px;
-    margin-bottom:30px;
+    margin-bottom:22px;
 }
 
 .perfil-card{
@@ -74,6 +74,17 @@ body{
     color:white;
     border-color:#0D47A1;
     transform:translateY(-5px);
+}
+
+.perfil-descricao{
+    background:#eef4ff;
+    color:#0D47A1;
+    border-left:5px solid #0D47A1;
+    padding:14px;
+    border-radius:10px;
+    margin-bottom:28px;
+    font-size:15px;
+    font-weight:bold;
 }
 
 .form-group{
@@ -119,9 +130,19 @@ body{
     background:#1565C0;
 }
 
+.cadastro-aviso{
+    margin-top:18px;
+    color:#555;
+    font-size:15px;
+}
+
+.cadastro-aviso i{
+    color:#0D47A1;
+}
+
 .voltar{
     display:inline-block;
-    margin-top:25px;
+    margin-top:22px;
     text-decoration:none;
     color:#0D47A1;
     font-weight:bold;

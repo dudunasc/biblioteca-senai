@@ -11,6 +11,7 @@ class Usuario(db.Model, UserMixin):
     nome       = db.Column(db.String(50), nullable=False)
     email      = db.Column(db.String(50), nullable=False, unique=True)
     cpf        = db.Column(db.String(14), nullable=False, unique=True)
+    telefone = db.Column(db.String(15), nullable=False)
     matricula  = db.Column(db.String(20), nullable=False, unique=True)
     senha      = db.Column(db.String(300), nullable=False)
     perfil     = db.Column(db.String(20), nullable=False)
@@ -23,11 +24,13 @@ class Livro(db.Model):
     isbn                   = db.Column(db.String(20), nullable=False, unique=True)
     titulo                 = db.Column(db.String(100), nullable=False)
     autor                  = db.Column(db.String(50), nullable=False)
-    categoria              = db.Column(db.String(50), nullable=False)
+    categoria_id           = db.Column(db.Integer, db.ForeignKey("categoria.id"), nullable=False)
     editora                = db.Column(db.String(50), nullable=False)
     ano                    = db.Column(db.Integer)
     quantidade_total       = db.Column(db.Integer, nullable=False)
     quantidade_disponivel  = db.Column(db.Integer, nullable=False)
+    resumo                 = db.Column(db.Text)
+    imagem                 = db.Column(db.String(200))
 
     emprestimos = db.relationship(
         'Emprestimo',
@@ -57,3 +60,14 @@ class Solicitacao(db.Model):
         default=datetime.utcnow)
     professor_id      = db.Column(db.Integer, db.ForeignKey('usuario.id'),
         nullable=False)
+    
+
+class Categoria(db.Model):
+    __tablename__ = "categoria"
+
+    id                = db.Column(db.Integer, primary_key=True)
+    nome              = db.Column(db.String(80), nullable=False, unique=True)
+    descricao         = db.Column(db.String(200), nullable=True)
+    livros            = db.relationship("Livro", backref="categoria_rel", lazy=True)
+    def __repr__(self):
+        return f"<Categoria {self.nome}>"

@@ -37,5 +37,6 @@ from app.routes import *
 
 from app.models import Usuario
 from app.models import Livro
+from app.models import Categoria
 from app.models import Emprestimo
 from app.models import Solicitacao

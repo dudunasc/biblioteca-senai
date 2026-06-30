@@ -14,6 +14,7 @@ from app.models import (
     db,
     Usuario,
     Livro,
+    Categoria,
     Emprestimo,
     Solicitacao
 )
@@ -22,6 +23,7 @@ from app.forms import (
     LoginForm,
     UsuarioForm,
     LivroForm,
+    CategoriaForm,
     EmprestimoForm,
     SolicitacaoForm
 )
@@ -42,6 +44,9 @@ from app.controllers.controllerSolicitacao import ControllerSolicitacao
 HOME_PAGE:               Final[str] = "dashboard.html"
 PAGE_LOGIN:              Final[str] = "login.html"
 PAGE_ADMIN_PANEL:        Final[str] = "dashboardAdmin.html"
+PAGE_CATEGORY_REGISTER:  Final[str] = "categoryRegister.html"
+PAGE_CATEGORY_LIST:      Final[str] = "categoryList.html"
+
 
 PAGE_USER_REGISTER:      Final[str] = "userRegister.html"
 PAGE_USER_LIST:          Final[str] = "userList.html"
@@ -59,7 +64,6 @@ PAGE_REQUEST_REGISTER:   Final[str] = "requestRegister.html"
 PAGE_REQUEST_LIST:       Final[str] = "requestList.html"
 
 PAGE_REPORT:             Final[str] = "report.html"
-PAGE_ADMIN_PANEL:        Final[str] = "dashboardAdmin.html"
 
 
 # ----- funcao auxiliar ----- 
@@ -96,11 +100,9 @@ def login():
     checkForm(form)
 
     if form.validate_on_submit():
-
         user = form.login()
 
         if user:
-
             login_user(user)
 
             flash(
@@ -109,19 +111,16 @@ def login():
             )
 
             if user.perfil == 'ADMIN':
-
                 return redirect(
                     url_for('dashboardAdmin')
                 )
 
             elif user.perfil == 'PROFESSOR':
-
                 return redirect(
                     url_for('painel_professor')
                 )
 
             elif user.perfil == 'ALUNO':
-
                 return redirect(
                     url_for('painel_aluno')
                 )
@@ -135,6 +134,7 @@ def login():
         PAGE_LOGIN,
         form=form
     )
+
 # ----- Dashboard Admin ----- 
 @app.route('/admin')
 @login_required
@@ -142,15 +142,35 @@ def dashboardAdmin():
 
     if ControllerUser.checkAdminPermission():
 
+        total_usuarios = Usuario.query.count()
+        total_livros = Livro.query.count()
+        total_emprestimos = Emprestimo.query.filter_by(status='ATIVO').count()
+        total_solicitacoes = Solicitacao.query.count()
+
+        ultimos_emprestimos = Emprestimo.query.filter_by(
+            status='ATIVO'
+        ).order_by(
+            Emprestimo.data_emprestimo.desc()
+        ).limit(5).all()
+
+        proximas_devolucoes = Emprestimo.query.filter_by(
+            status='ATIVO'
+        ).order_by(
+            Emprestimo.data_prevista.asc()
+        ).limit(5).all()
+
         return render_template(
-            PAGE_ADMIN_PANEL
+            PAGE_ADMIN_PANEL,
+            total_usuarios=total_usuarios,
+            total_livros=total_livros,
+            total_emprestimos=total_emprestimos,
+            total_solicitacoes=total_solicitacoes,
+            ultimos_emprestimos=ultimos_emprestimos,
+            proximas_devolucoes=proximas_devolucoes
         )
 
     flash('Acesso negado.', 'danger')
-
-    return redirect(
-        url_for('index')
-    )
+    return redirect(url_for('index'))
 
 # ----- Dashboard Professor ----- 
 @app.route('/professor')
@@ -160,7 +180,6 @@ def painel_professor():
     return render_template(
         PAGE_TEACHER_PANEL
     )
-
 
 # ----- Dashboard Aluno ----- 
 @app.route('/aluno')
@@ -258,6 +277,70 @@ def cadastrar_livro():
         'Acesso negado.',
         'danger'
     )
+
+    return redirect(
+        url_for('index')
+    )
+
+# ----- Cadastro Categoria -----
+@app.route('/categoria/cadastro', methods=['GET', 'POST'])
+@login_required
+def cadastrarCategoria():
+
+    if ControllerUser.checkAdminPermission():
+
+        form = CategoriaForm()
+
+        checkForm(form)
+
+        if form.validate_on_submit():
+
+            categoria = Categoria(
+                nome=form.nome.data,
+                descricao=form.descricao.data
+            )
+
+            db.session.add(categoria)
+            db.session.commit()
+
+            flash(
+                'Categoria cadastrada com sucesso!',
+                'success'
+            )
+
+            return redirect(
+                url_for('listarCategorias')
+            )
+
+        return render_template(
+            PAGE_CATEGORY_REGISTER,
+            form=form
+        )
+
+    flash('Acesso negado.', 'danger')
+
+    return redirect(
+        url_for('index')
+    )
+
+
+# ----- Listar Categorias -----
+@app.route('/categorias')
+@login_required
+def listarCategorias():
+
+    if ControllerUser.checkAdminPermission():
+
+        categorias = Categoria.query.order_by(
+            Categoria.nome
+        ).all()
+
+        return render_template(
+            PAGE_CATEGORY_LIST,
+            categorias=categorias
+        )
+
+    flash('Acesso negado.', 'danger')
 
     return redirect(
         url_for('index')

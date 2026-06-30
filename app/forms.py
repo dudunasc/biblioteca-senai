@@ -1,12 +1,13 @@
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileAllowed
+
 from wtforms import (
     StringField,
     PasswordField,
     IntegerField,
     SelectField,
     TextAreaField,
-    SubmitField,
-    DateField
+    SubmitField
 )
 
 from wtforms.validators import (
@@ -18,12 +19,14 @@ from wtforms.validators import (
 
 from app.models import (
     Usuario,
-    Livro
+    Livro,
+    Categoria
 )
 
 from app import db, bcrypt
 
-#LOGIN
+
+# LOGIN
 class LoginForm(FlaskForm):
 
     email = StringField(
@@ -58,7 +61,7 @@ class LoginForm(FlaskForm):
         return None
 
 
-#USUÁRIO
+# USUÁRIO
 class UsuarioForm(FlaskForm):
 
     nome = StringField(
@@ -85,6 +88,14 @@ class UsuarioForm(FlaskForm):
         ]
     )
 
+    telefone = StringField(
+        'Telefone',
+        validators=[
+            DataRequired(),
+            Length(min=14, max=15)
+        ]
+    )
+
     matricula = StringField(
         'Matrícula',
         validators=[
@@ -99,16 +110,21 @@ class UsuarioForm(FlaskForm):
             ('ADMIN', 'Administrador'),
             ('PROFESSOR', 'Professor'),
             ('ALUNO', 'Aluno')
+        ],
+        validators=[
+            DataRequired()
         ]
     )
 
     submit = SubmitField('Salvar')
 
     def saveUser(self):
+
         user = Usuario(
             nome=self.nome.data,
             email=self.email.data,
             cpf=self.cpf.data,
+            telefone=self.telefone.data,
             matricula=self.matricula.data,
             senha=bcrypt.generate_password_hash(
                 self.matricula.data
@@ -123,32 +139,57 @@ class UsuarioForm(FlaskForm):
         return user
 
 
-#LIVRO
+# CATEGORIA
+class CategoriaForm(FlaskForm):
+
+    nome = StringField(
+        'Nome da categoria',
+        validators=[
+            DataRequired(),
+            Length(max=80)
+        ]
+    )
+
+    descricao = TextAreaField(
+        'Descrição',
+        validators=[
+            Length(max=200)
+        ]
+    )
+
+    submit = SubmitField('Salvar')
+
+
+# LIVRO
 class LivroForm(FlaskForm):
 
     isbn = StringField(
         'ISBN',
         validators=[
-            DataRequired()
+            DataRequired(),
+            Length(max=20)
         ]
     )
 
     titulo = StringField(
         'Título',
         validators=[
-            DataRequired()
+            DataRequired(),
+            Length(max=100)
         ]
     )
 
     autor = StringField(
         'Autor',
         validators=[
-            DataRequired()
+            DataRequired(),
+            Length(max=50)
         ]
     )
 
-    categoria = StringField(
+    categoria = SelectField(
         'Categoria',
+        coerce=int,
         validators=[
             DataRequired()
         ]
@@ -157,11 +198,14 @@ class LivroForm(FlaskForm):
     editora = StringField(
         'Editora',
         validators=[
-            DataRequired()
+            DataRequired(),
+            Length(max=50)
         ]
     )
 
-    ano = IntegerField('Ano')
+    ano = IntegerField(
+        'Ano'
+    )
 
     quantidade_total = IntegerField(
         'Quantidade Total',
@@ -179,7 +223,29 @@ class LivroForm(FlaskForm):
         ]
     )
 
+    resumo = TextAreaField(
+        'Resumo'
+    )
+
+    imagem = FileField(
+        'Capa do Livro',
+        validators=[
+            FileAllowed(
+                ['jpg', 'jpeg', 'png'],
+                'Apenas imagens JPG, JPEG ou PNG.'
+            )
+        ]
+    )
+
     submit = SubmitField('Salvar')
+
+    def __init__(self, *args, **kwargs):
+        super(LivroForm, self).__init__(*args, **kwargs)
+
+        self.categoria.choices = [
+            (categoria.id, categoria.nome)
+            for categoria in Categoria.query.order_by(Categoria.nome).all()
+        ]
 
     def saveBook(self):
 
@@ -187,11 +253,12 @@ class LivroForm(FlaskForm):
             isbn=self.isbn.data,
             titulo=self.titulo.data,
             autor=self.autor.data,
-            categoria=self.categoria.data,
+            categoria_id=self.categoria.data,
             editora=self.editora.data,
             ano=self.ano.data,
             quantidade_total=self.quantidade_total.data,
-            quantidade_disponivel=self.quantidade_disponivel.data
+            quantidade_disponivel=self.quantidade_disponivel.data,
+            resumo=self.resumo.data
         )
 
         db.session.add(livro)
@@ -200,19 +267,23 @@ class LivroForm(FlaskForm):
         return livro
 
 
-#EMPRÉSTIMO
+# EMPRÉSTIMO
 class EmprestimoForm(FlaskForm):
 
     usuario_id = SelectField(
         'Usuário',
         coerce=int,
-        validators=[DataRequired()]
+        validators=[
+            DataRequired()
+        ]
     )
 
     livro_id = SelectField(
         'Livro',
         coerce=int,
-        validators=[DataRequired()]
+        validators=[
+            DataRequired()
+        ]
     )
 
     submit = SubmitField(
@@ -220,7 +291,7 @@ class EmprestimoForm(FlaskForm):
     )
 
 
-#SOLICITAÇÃO
+# SOLICITAÇÃO
 class SolicitacaoForm(FlaskForm):
 
     titulo_livro = StringField(

@@ -10,10 +10,14 @@ body{
     color:#333;
 }
 
+/* ===== Layout ===== */
+
 .page-layout{
     display:flex;
     min-height:100vh;
 }
+
+/* ==== Sidebar ==== */
 
 .sidebar{
     width:270px;
@@ -71,6 +75,8 @@ body{
     background:rgba(255,255,255,.12);
 }
 
+/* ==== Conteúdo ==== */
+
 .main-content{
     flex:1;
     padding:35px;
@@ -109,25 +115,14 @@ body{
     font-size:32px;
 }
 
+/* ==== Formulário ==== */
+
 .form-card{
     background:white;
     padding:35px;
     border-radius:18px;
     box-shadow:0 6px 20px rgba(0,0,0,.10);
-    max-width:100%;
-}
-
-.form-card form{
-    display:grid;
-    grid-template-columns:repeat(2, 1fr);
-    gap:22px;
-}
-
-.form-actions{
-    grid-column:1 / -1;
-    display:flex;
-    gap:15px;
-    margin-top:10px;
+    width:100%;
 }
 
 .form-card h2{
@@ -135,34 +130,14 @@ body{
     margin-bottom:25px;
 }
 
-.form-group{
-    margin-bottom:20px;
-}
-
-.form-group label{
-    display:block;
-    font-weight:bold;
-    margin-bottom:8px;
-    color:#333;
-}
-
-.form-group input,
-.form-group select{
-    width:100%;
-    padding:14px;
-    border:1px solid #ccc;
-    border-radius:10px;
-    font-size:16px;
-    outline:none;
-}
-
-.form-group input:focus,
-.form-group select:focus{
-    border-color:#0D47A1;
+.form-card form{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:22px;
 }
 
 .form-section-title{
-    grid-column:1 / -1;
+    grid-column:1/-1;
     color:#0D47A1;
     margin-top:10px;
     margin-bottom:5px;
@@ -172,8 +147,35 @@ body{
     gap:10px;
 }
 
-.info-senha{
-    grid-column:1 / -1;
+.form-group{
+    display:flex;
+    flex-direction:column;
+}
+
+.form-group label{
+    margin-bottom:8px;
+    font-weight:bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+    padding:14px;
+    border:1px solid #ccc;
+    border-radius:10px;
+    font-size:15px;
+    outline:none;
+    transition:.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{
+    border-color:#0D47A1;
+}
+
+.info-estoque{
+    grid-column:1/-1;
     background:#eef4ff;
     color:#0D47A1;
     border-left:5px solid #0D47A1;
@@ -182,10 +184,13 @@ body{
     font-weight:bold;
 }
 
+/* ===== Botões ===== */
+
 .form-actions{
+    grid-column:1/-1;
     display:flex;
     gap:15px;
-    margin-top:25px;
+    margin-top:10px;
 }
 
 .btn-submit{
@@ -217,9 +222,24 @@ body{
     background:#d1d5db;
 }
 
-@media(max-width:800px){
+.form-group textarea{
+    min-height:120px;
+    resize:vertical;
+}
+
+/* ===== Responsividade ===== */
+
+@media(max-width:900px){
+
     .form-card form{
         grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:800px){
+
+    .page-layout{
+        flex-direction:column;
     }
 
     .sidebar{
@@ -235,4 +255,5 @@ body{
     .form-actions{
         flex-direction:column;
     }
+
 }

@@ -7,7 +7,7 @@ from typing import Final
 
 DB_CONNECTION: Final[str] = 'mysql+pymysql'
 DB_USER:       Final[str] = 'root'
-DB_PASSWORD:   Final[str] = '123'
+DB_PASSWORD:   Final[str] = ''
 DB_HOST:       Final[str] = 'localhost'
 DB_PORT:       Final[str] = '3306'
 DB_NAME:       Final[str] = 'biblioteca_senai'

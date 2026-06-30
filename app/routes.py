@@ -80,10 +80,14 @@ def checkForm(form):
 @app.route('/')
 def index():
 
-    return render_template(
-        HOME_PAGE
-    )
+    livros = Livro.query.order_by(
+        Livro.titulo
+    ).limit(8).all()
 
+    return render_template(
+        HOME_PAGE,
+        livros=livros
+    )
 
 # ----- Login ----- 
 @app.route('/login', methods=['GET', 'POST'])

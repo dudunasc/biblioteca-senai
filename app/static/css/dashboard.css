@@ -57,9 +57,7 @@ nav a:hover{
     color:#FFD54F;
 }
 
-/* ===========================
-   BANNER
-=========================== */
+/* ==== BANNER ==== */
 
 .banner{
 
@@ -93,9 +91,7 @@ nav a:hover{
     margin-bottom:35px;
 }
 
-/* ===========================
-   PESQUISA
-=========================== */
+/* ==== PESQUISA ===== */
 
 .pesquisa{
 
@@ -144,9 +140,62 @@ nav a:hover{
 
 }
 
-/* ===========================
-   LIVROS
-=========================== */
+.pesquisa-area{
+
+    width:100%;
+    max-width:900px;
+    margin:35px auto 0;
+
+}
+
+.ver-acervo{
+
+    display:block;
+    margin-top:18px;
+    text-align:right;
+    text-decoration:none;
+    color:#0D47A1;
+    font-weight:bold;
+    transition:.3s;
+
+}
+
+.ver-acervo:hover{
+
+    color:#1565C0;
+
+}
+
+.acervo-completo{
+
+    margin-top:50px;
+    text-align:center;
+
+}
+
+.acervo-completo a{
+
+    text-decoration:none;
+    font-size:20px;
+    font-weight:bold;
+    color:#0D47A1;
+    transition:.3s;
+
+}
+
+.acervo-completo a:hover{
+
+    color:#1565C0;
+
+}
+
+.acervo-completo i{
+
+    margin-right:8px;
+
+}
+
+/* ===== LIVROS ===== */
 
 .livros{
 
@@ -254,6 +303,21 @@ nav a:hover{
     background:#1565C0;
 }
 
+.btn-detalhes{
+    display:inline-block;
+    margin-top:15px;
+    background:#0D47A1;
+    color:white;
+    text-decoration:none;
+    padding:12px 20px;
+    border-radius:8px;
+    transition:.3s;
+}
+
+.btn-detalhes:hover{
+    background:#1565C0;
+}
+
 /* ===========================
    FOOTER
 =========================== */
@@ -271,9 +335,7 @@ footer{
     margin-top:60px;
 }
 
-/* ===========================
-   RESPONSIVIDADE
-=========================== */
+/* ===== RESPONSIVIDADE ===== */
 
 @media(max-width:900px){
 

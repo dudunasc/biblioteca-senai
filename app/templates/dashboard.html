@@ -26,10 +26,6 @@
             <i class="bi bi-house-door-fill"></i>
             Início
         </a>
-        <a href="#">
-            <i class="bi bi-book-fill"></i>
-            Acervo
-        </a>
         <a href="{{ url_for('login') }}">
             <i class="bi bi-person-circle"></i>
             Entrar
@@ -42,61 +38,78 @@
     <p>
         Conectando pessoas ao conhecimento.
     </p>
+    <div class="pesquisa-area">
     <div class="pesquisa">
         <input
             type="text"
             placeholder="Pesquisar por título, autor ou ISBN..."
         >
+
         <button>
             <i class="bi bi-search"></i>
         </button>
     </div>
+
+    <a href="{{ url_for('listar_livros') }}" class="ver-acervo">
+        Ver todo o acervo →
+    </a>
+</div>
 
 </section>
 
 <section class="livros">
     <h2>Livros Disponíveis</h2>
     <div class="cards">
-        <div class="card">
-            <img
-            src="https://placehold.co/220x300"
-            alt="Livro">
-            <h3>Python para Iniciantes</h3>
-            <p>Autor: João Silva</p>
-            <p>Disponíveis: 5</p>
-            <button>Ver detalhes</button>
-        </div>
+        {% for livro in livros %}
 
         <div class="card">
-            <img
-            src="https://placehold.co/220x300"
-            alt="Livro">
-            <h3>Java Completo</h3>
-            <p>Autor: Maria Souza</p>
-            <p>Disponíveis: 2</p>
-            <button>Ver detalhes</button>
-        </div>
-        <div class="card">
-            <img
-            src="https://placehold.co/220x300"
-            alt="Livro">
-            <h3>Banco de Dados</h3>
-            <p>Autor: Carlos Lima</p>
-            <p>Disponíveis: 7</p>
-            <button>Ver detalhes</button>
+
+            {% if livro.imagem %}
+
+                <img
+                    src="{{ url_for('static', filename='uploads/' + livro.imagem) }}"
+                    alt="{{ livro.titulo }}">
+
+            {% else %}
+
+                <img
+                    src="https://placehold.co/220x300?text=Sem+Capa"
+                    alt="{{ livro.titulo }}">
+
+            {% endif %}
+
+            <h3>{{ livro.titulo }}</h3>
+            <p><strong>Autor:</strong> {{ livro.autor }}</p>
+            <p><strong>Categoria:</strong> {{ livro.categoria_rel.nome }}</p>
+
+            <p>
+                <strong>Disponíveis:</strong>
+                {{ livro.quantidade_disponivel }}
+            </p>
+
+            <a href="{{ url_for('visualizar_livro', id=livro.id) }}" class="btn-detalhes">
+                Ver detalhes
+            </a>
         </div>
 
-        <div class="card">
-            <img
-            src="https://placehold.co/220x300"
-            alt="Livro">
+        {% else %}
 
-            <h3>Flask Web</h3>
-            <p>Autor: Pedro Santos</p>
-            <p>Disponíveis: 3</p>
-            <button>Ver detalhes</button>
-        </div>
+        <p>
+            Nenhum livro cadastrado no momento.
+        </p>
+
+        {% endfor %}
     </div>
+
+    <div class="acervo-completo">
+
+    <a href="{{ url_for('listar_livros') }}">
+        <i class="bi bi-book-fill"></i>
+
+        Consulte todo o nosso acervo →
+    </a>
+
+</div>
 </section>
 
 <footer>

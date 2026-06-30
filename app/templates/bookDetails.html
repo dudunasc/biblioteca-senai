@@ -1,22 +1,115 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="pt-BR">
 
-{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ livro.titulo }} - ReadFlow</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bookDetails.css') }}">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
 
-<h2>{{ livro.titulo }}</h2>
+<body>
 
-<p><strong>ISBN:</strong> {{ livro.isbn }}</p>
+<div class="container">
 
-<p><strong>Autor:</strong> {{ livro.autor }}</p>
+    <a href="{{ url_for('index') }}" class="btn-voltar">
+        <i class="bi bi-arrow-left"></i>
+        Voltar
+    </a>
 
-<p><strong>Categoria:</strong> {{ livro.categoria }}</p>
+    <section class="book-card">
+        <div class="book-image">
 
-<p><strong>Editora:</strong> {{ livro.editora }}</p>
+            {% if livro.imagem %}
+                <img src="{{ url_for('static', filename='uploads/' + livro.imagem) }}"
+                     alt="{{ livro.titulo }}">
+            {% else %}
+                <img src="https://placehold.co/280x400?text=Sem+Capa"
+                     alt="{{ livro.titulo }}">
+            {% endif %}
 
-<p><strong>Ano:</strong> {{ livro.ano }}</p>
+        </div>
 
-<p>
-    <strong>Disponíveis:</strong>
-    {{ livro.quantidade_disponivel }}
-</p>
+        <div class="book-info">
+            <h1>{{ livro.titulo }}</h1>
 
-{% endblock %}
+            <div class="info-grid">
+
+                <div class="info-item">
+                    <span>Autor</span>
+                    <strong>{{ livro.autor }}</strong>
+                </div>
+
+                <div class="info-item">
+                    <span>Categoria</span>
+                    <strong>{{ livro.categoria_rel.nome }}</strong>
+                </div>
+
+                <div class="info-item">
+                    <span>Editora</span>
+                    <strong>{{ livro.editora }}</strong>
+                </div>
+
+                <div class="info-item">
+                    <span>Ano</span>
+                    <strong>{{ livro.ano }}</strong>
+                </div>
+
+                <div class="info-item">
+                    <span>ISBN</span>
+                    <strong>{{ livro.isbn }}</strong>
+                </div>
+
+                <div class="info-item">
+                    <span>Exemplares disponíveis</span>
+                    <strong>{{ livro.quantidade_disponivel }}</strong>
+                </div>
+            </div>
+
+            {% if livro.quantidade_disponivel > 0 %}
+                <span class="disponibilidade">
+                    Disponível
+                </span>
+            {% else %}
+                <span class="disponibilidade indisponivel">
+                    Indisponível
+                </span>
+            {% endif %}
+
+            <button class="btn-emprestimo" onclick="abrirAvisoLogin()">
+                <i class="bi bi-journal-arrow-up"></i>
+                Solicitar empréstimo
+            </button>
+
+            <div id="avisoLogin" class="aviso-login">
+
+                <p>
+                    Você precisa fazer login para solicitar um empréstimo.
+                </p>
+
+                <a href="{{ url_for('login') }}">
+                    Fazer login
+                </a>
+            </div>
+
+            <div class="descricao">
+                <h2>Descrição</h2>
+
+                <p>
+                    {{ livro.resumo or 'Nenhuma descrição cadastrada para este livro.' }}
+                </p>
+
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+function abrirAvisoLogin(){
+    document.getElementById("avisoLogin").classList.add("mostrar");
+}
+</script>
+</body>
+</html>

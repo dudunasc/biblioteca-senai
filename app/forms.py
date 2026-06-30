@@ -1,5 +1,9 @@
-from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileAllowed
+from flask_wtf          import FlaskForm
+from flask_wtf.file     import FileField, FileAllowed
+import os
+from werkzeug.utils     import secure_filename
+from app                import app
+
 
 from wtforms import (
     StringField,
@@ -248,6 +252,19 @@ class LivroForm(FlaskForm):
         ]
 
     def saveBook(self):
+        nome_imagem = None
+
+        if self.imagem.data:
+            arquivo = self.imagem.data
+            nome_imagem = secure_filename(arquivo.filename)
+
+            caminho = os.path.join(
+                app.root_path,
+                'static/uploads',
+                nome_imagem
+            )
+
+            arquivo.save(caminho)
 
         livro = Livro(
             isbn=self.isbn.data,
@@ -258,7 +275,8 @@ class LivroForm(FlaskForm):
             ano=self.ano.data,
             quantidade_total=self.quantidade_total.data,
             quantidade_disponivel=self.quantidade_disponivel.data,
-            resumo=self.resumo.data
+            resumo=self.resumo.data,
+            imagem=nome_imagem
         )
 
         db.session.add(livro)

@@ -40,3 +40,35 @@ from app.models import Livro
 from app.models import Categoria
 from app.models import Emprestimo
 from app.models import Solicitacao
+
+with app.app_context():
+
+    categorias_padrao = [
+        ("Romance", "Livros de romance e literatura"),
+        ("Terror", "Livros de terror e suspense"),
+        ("Autoajuda", "Livros de desenvolvimento pessoal"),
+        ("Programação", "Livros sobre desenvolvimento de software"),
+        ("Banco de Dados", "Livros sobre SQL, MySQL e modelagem"),
+        ("Redes", "Livros sobre redes de computadores"),
+        ("Administração", "Livros sobre gestão e negócios"),
+        ("Matemática", "Livros de matemática e raciocínio lógico"),
+        ("História", "Livros de história geral"),
+        ("Outros", "Categoria geral para livros diversos")
+    ]
+
+    for nome, descricao in categorias_padrao:
+
+        categoria_existente = Categoria.query.filter_by(
+            nome=nome
+        ).first()
+
+        if not categoria_existente:
+
+            categoria = Categoria(
+                nome=nome,
+                descricao=descricao
+            )
+
+            db.session.add(categoria)
+
+    db.session.commit()

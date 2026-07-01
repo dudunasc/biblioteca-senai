@@ -4,16 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Biblioteca Senai</title>
-
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/dashboard.css') }}">
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
-
 <body>
 
 <header>
@@ -21,11 +16,13 @@
         <i class="bi bi-book-half"></i>
         <h1>ReadFlow</h1>
     </div>
+
     <nav>
-        <a href="/">
+        <a href="{{ url_for('index') }}">
             <i class="bi bi-house-door-fill"></i>
             Início
         </a>
+
         <a href="{{ url_for('login') }}">
             <i class="bi bi-person-circle"></i>
             Entrar
@@ -38,48 +35,46 @@
     <p>
         Conectando pessoas ao conhecimento.
     </p>
+
     <div class="pesquisa-area">
-    <div class="pesquisa">
-        <input
-            type="text"
-            placeholder="Pesquisar por título, autor ou ISBN..."
-        >
+        <div class="pesquisa">
+            <input
+                type="text"
+                placeholder="Pesquisar por título, autor ou ISBN...">
 
-        <button>
-            <i class="bi bi-search"></i>
-        </button>
+            <button>
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
+
+        <a href="{{ url_for('listar_livros') }}" class="ver-acervo">
+            Ver todo o acervo →
+        </a>
     </div>
-
-    <a href="{{ url_for('listar_livros') }}" class="ver-acervo">
-        Ver todo o acervo →
-    </a>
-</div>
-
 </section>
 
 <section class="livros">
     <h2>Livros Disponíveis</h2>
     <div class="cards">
+
         {% for livro in livros %}
 
         <div class="card">
 
             {% if livro.imagem %}
-
                 <img
                     src="{{ url_for('static', filename='uploads/' + livro.imagem) }}"
                     alt="{{ livro.titulo }}">
-
             {% else %}
-
                 <img
                     src="https://placehold.co/220x300?text=Sem+Capa"
                     alt="{{ livro.titulo }}">
-
             {% endif %}
 
             <h3>{{ livro.titulo }}</h3>
+
             <p><strong>Autor:</strong> {{ livro.autor }}</p>
+
             <p><strong>Categoria:</strong> {{ livro.categoria_rel.nome }}</p>
 
             <p>
@@ -87,14 +82,25 @@
                 {{ livro.quantidade_disponivel }}
             </p>
 
-            <a href="{{ url_for('visualizar_livro', id=livro.id) }}" class="btn-detalhes">
-                Ver detalhes
-            </a>
+            <div class="acoes">
+                <a href="{{ url_for('visualizar_livro', id=livro.id) }}"
+                   class="btn-detalhes">
+                    <i class="bi bi-eye-fill"></i>
+                    Ver detalhes
+                </a>
+
+                <button
+                    class="btn-emprestimo"
+                    onclick="abrirAvisoLogin()">
+                    <i class="bi bi-journal-arrow-up"></i>
+                    Solicitar empréstimo
+                </button>
+            </div>
         </div>
 
         {% else %}
 
-        <p>
+        <p class="sem-livros">
             Nenhum livro cadastrado no momento.
         </p>
 
@@ -102,21 +108,75 @@
     </div>
 
     <div class="acervo-completo">
-
-    <a href="{{ url_for('listar_livros') }}">
-        <i class="bi bi-book-fill"></i>
-
-        Consulte todo o nosso acervo →
-    </a>
-
-</div>
+        <a href="{{ url_for('listar_livros') }}">
+            <i class="bi bi-book-fill"></i>
+            Consulte todo o nosso acervo →
+        </a>
+    </div>
 </section>
+
+<div id="avisoLogin" class="modal-login">
+    <div class="modal-card">
+        <div class="modal-icon">
+            <i class="bi bi-book-half"></i>
+        </div>
+
+        <h3>Solicitar empréstimo</h3>
+
+        <p>
+            Para solicitar um empréstimo é necessário
+            entrar em sua conta.
+        </p>
+
+        <p class="modal-texto">
+            Assim poderemos registrar o empréstimo em seu nome,
+            controlar o prazo de devolução e manter o histórico
+            de suas leituras.
+        </p>
+
+        <div class="modal-actions">
+
+            <a href="{{ url_for('login') }}">
+                <i class="bi bi-box-arrow-in-right"></i>
+                Fazer login
+            </a>
+
+            <button onclick="fecharAvisoLogin()">
+                <i class="bi bi-x-circle"></i>
+                Cancelar
+            </button>
+        </div>
+    </div>
+</div>
 
 <footer>
     <p>
         © 2026 ReadFlow - Sistema de Gestão da Biblioteca SENAI
     </p>
-
 </footer>
+
+<script>
+function abrirAvisoLogin(){
+    document
+        .getElementById("avisoLogin")
+        .classList
+        .add("mostrar");
+}
+
+function fecharAvisoLogin(){
+    document
+        .getElementById("avisoLogin")
+        .classList
+        .remove("mostrar");
+}
+
+window.onclick = function(event){
+    let modal = document.getElementById("avisoLogin");
+
+    if(event.target == modal){
+        fecharAvisoLogin();
+    }
+}
+</script>
 </body>
 </html>

@@ -1,25 +1,234 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="pt-BR">
 
-{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<h2>Acervo</h2>
+    <title>Acervo - ReadFlow</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/bookList.css') }}">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
 
-{% for livro in livros %}
+<body>
 
-<div class="card">
+<header>
+    <div class="logo">
+        <i class="bi bi-book-half"></i>
+        <h1>ReadFlow</h1>
+    </div>
 
-    <h3>{{ livro.titulo }}</h3>
+    <nav>
+        <a href="{{ url_for('index') }}">
+            <i class="bi bi-house-door-fill"></i>
+            Início
+        </a>
 
-    <p>Autor: {{ livro.autor }}</p>
+        <a href="{{ url_for('login') }}">
+            <i class="bi bi-person-circle"></i>
+            Entrar
+        </a>
+    </nav>
+</header>
 
-    <p>Categoria: {{ livro.categoria }}</p>
+<section class="banner">
 
-    <a href="{{ url_for('visualizar_livro', id=livro.id) }}">
-        Ver detalhes
-    </a>
+    <h2>Nosso Acervo</h2>
 
+    <p>
+        Explore todos os livros disponíveis na biblioteca.
+    </p>
+
+    <form class="pesquisa" method="GET">
+
+        <input
+            type="text"
+            name="titulo"
+            value="{{ request.args.get('titulo','') }}"
+            placeholder="Pesquisar por título...">
+
+        <button type="submit">
+            <i class="bi bi-search"></i>
+        </button>
+    </form>
+</section>
+
+<section class="livros">
+
+    <h2>{{ livros|length }} livros encontrados</h2>
+
+    <div class="cards">
+
+        {% for livro in livros %}
+
+        <div class="card">
+
+            {% if livro.imagem %}
+
+                <img
+                    src="{{ url_for('static', filename='uploads/' + livro.imagem) }}"
+                    alt="{{ livro.titulo }}">
+
+            {% else %}
+
+                <img
+                    src="https://placehold.co/220x300?text=Sem+Capa"
+                    alt="{{ livro.titulo }}">
+
+            {% endif %}
+
+            <h3>{{ livro.titulo }}</h3>
+
+            <p>
+                <strong>Autor:</strong>
+                {{ livro.autor }}
+            </p>
+
+            <p>
+                <strong>Categoria:</strong>
+                {{ livro.categoria_rel.nome }}
+            </p>
+
+            <p>
+                <strong>Disponíveis:</strong>
+                {{ livro.quantidade_disponivel }}
+            </p>
+
+            {% if livro.quantidade_disponivel > 0 %}
+
+                <span class="status disponivel">
+                    Disponível
+                </span>
+
+            {% else %}
+
+                <span class="status indisponivel">
+                    Indisponível
+                </span>
+
+            {% endif %}
+
+            <div class="acoes">
+
+                <a
+                    href="{{ url_for('visualizar_livro', id=livro.id) }}"
+                    class="btn-detalhes">
+
+                    <i class="bi bi-eye-fill"></i>
+                    Ver detalhes
+
+                </a>
+
+                <button
+                    class="btn-emprestimo"
+                    onclick="abrirAvisoLogin()">
+
+                    <i class="bi bi-journal-arrow-up"></i>
+                    Solicitar
+
+                </button>
+
+            </div>
+
+        </div>
+
+        {% else %}
+
+        <p class="nenhum">
+
+            Nenhum livro encontrado.
+
+        </p>
+
+        {% endfor %}
+
+    </div>
+</section>
+
+<div id="avisoLogin" class="modal-login">
+    <div class="modal-card">
+        <div class="modal-icon">
+
+            <i class="bi bi-book-half"></i>
+
+        </div>
+
+        <h3>Solicitar empréstimo</h3>
+
+        <p>
+
+            Para solicitar um empréstimo é necessário
+            entrar em sua conta.
+
+        </p>
+
+        <p class="modal-texto">
+
+            Assim poderemos registrar o empréstimo em seu nome,
+            controlar o prazo de devolução e manter o histórico
+            de suas leituras.
+
+        </p>
+
+        <div class="modal-actions">
+
+            <a href="{{ url_for('login') }}">
+
+                <i class="bi bi-box-arrow-in-right"></i>
+
+                Fazer login
+
+            </a>
+
+            <button onclick="fecharAvisoLogin()">
+
+                <i class="bi bi-x-circle"></i>
+
+                Cancelar
+
+            </button>
+
+        </div>
+    </div>
 </div>
 
-{% endfor %}
+<footer>
 
-{% endblock %}
+    <p>
+        © 2026 ReadFlow - Sistema de Gestão da Biblioteca SENAI
+    </p>
+</footer>
+
+<script>
+
+function abrirAvisoLogin(){
+    document
+        .getElementById("avisoLogin")
+        .classList
+        .add("mostrar");
+
+}
+
+function fecharAvisoLogin(){
+    document
+        .getElementById("avisoLogin")
+        .classList
+        .remove("mostrar");
+
+}
+
+window.onclick = function(event){
+    let modal = document.getElementById("avisoLogin");
+
+    if(event.target == modal){
+
+        fecharAvisoLogin();
+    }
+
+}
+
+</script>
+</body>
+</html>

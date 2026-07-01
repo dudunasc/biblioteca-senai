@@ -1,21 +1,212 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="pt-BR">
 
-{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empréstimos - ReadFlow</title>
 
-<h2>Novo Empréstimo</h2>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/loanRegister.css') }}">
 
-<form method="POST">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
 
-    {{ form.hidden_tag() }}
+<body>
 
-    {{ form.usuario_id.label }}
-    {{ form.usuario_id() }}
+<div class="page-layout">
 
-    {{ form.livro_id.label }}
-    {{ form.livro_id() }}
+    <aside class="sidebar">
+        <div class="brand">
+            <i class="bi bi-book-half"></i>
+            <h2>ReadFlow</h2>
+        </div>
 
-    {{ form.submit() }}
+        <nav class="menu">
+            <a href="{{ url_for('dashboardAdmin') }}">
+                <i class="bi bi-grid-1x2-fill"></i>
+                Dashboard
+            </a>
 
-</form>
+            <a href="{{ url_for('cadastrar_usuario') }}">
+                <i class="bi bi-people-fill"></i>
+                Usuários
+            </a>
 
-{% endblock %}
+            <a href="{{ url_for('listarLivrosAdmin') }}">
+                <i class="bi bi-book-fill"></i>
+                Livros
+            </a>
+
+            <a href="{{ url_for('listarCategorias') }}">
+                <i class="bi bi-tags-fill"></i>
+                Categorias
+            </a>
+
+            <a href="{{ url_for('realizar_emprestimo') }}" class="active">
+                <i class="bi bi-arrow-left-right"></i>
+                Empréstimos
+            </a>
+
+            <a href="{{ url_for('relatorio') }}">
+                <i class="bi bi-bar-chart-fill"></i>
+                Relatórios
+            </a>
+        </nav>
+
+        <a href="{{ url_for('logout') }}" class="logout">
+            <i class="bi bi-box-arrow-right"></i>
+            Sair
+        </a>
+    </aside>
+
+    <main class="main-content">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for categoria, mensagem in messages %}
+                    <div class="alert {{ categoria }}">
+                        {{ mensagem }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <header class="topbar">
+            <div>
+                <h1>Empréstimos</h1>
+                <p>Registre novos empréstimos e acompanhe os livros emprestados.</p>
+            </div>
+
+            <div class="user-info">
+                <i class="bi bi-person-circle"></i>
+                <span>{{ current_user.nome }}</span>
+            </div>
+        </header>
+
+        <section class="form-card">
+            <h2>Novo Empréstimo</h2>
+
+            <form method="POST">
+
+                {{ form.hidden_tag() }}
+
+                <div class="form-group">
+                    <label for="buscarUsuario">Pesquisar usuário</label>
+
+                    <input
+                        type="text"
+                        id="buscarUsuario"
+                        placeholder="Digite o nome do usuário...">
+
+                    {{ form.usuario_id(id="usuarioSelect", class="hidden-select") }}
+                </div>
+
+                <div class="form-group">
+                    <label for="buscarLivro">Pesquisar livro</label>
+
+                    <input
+                        type="text"
+                        id="buscarLivro"
+                        placeholder="Digite o nome do livro...">
+
+                    {{ form.livro_id(id="livroSelect", class="hidden-select") }}
+                </div>
+
+                <div class="form-actions">
+                    {{ form.submit(class="btn-submit") }}
+                </div>
+
+            </form>
+        </section>
+
+        <section class="table-card">
+
+            <h2>Empréstimos Ativos</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Livro</th>
+                        <th>Usuário</th>
+                        <th>Data do Empréstimo</th>
+                        <th>Data Prevista</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for emprestimo in emprestimos %}
+                    <tr>
+                        <td>{{ emprestimo.livro.titulo }}</td>
+                        <td>{{ emprestimo.usuario.nome }}</td>
+                        <td>{{ emprestimo.data_emprestimo.strftime('%d/%m/%Y') }}</td>
+                        <td>{{ emprestimo.data_prevista.strftime('%d/%m/%Y') }}</td>
+
+                        <td>
+                            <span class="status ativo">
+                                {{ emprestimo.status }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <form method="POST"
+                                  action="{{ url_for('devolverLivro', id=emprestimo.id) }}"
+                                  onsubmit="return confirm('Confirmar devolução deste livro?');">
+
+                                <button type="submit" class="btn-receber">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    Receber livro
+                                </button>
+
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="empty">
+                            Nenhum empréstimo ativo no momento.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
+</div>
+
+<script>
+function buscarESelecionar(inputId, selectId){
+    const input = document.getElementById(inputId);
+    const select = document.getElementById(selectId);
+    const options = Array.from(select.options);
+
+    input.addEventListener("input", function(){
+        const busca = this.value.toLowerCase().trim();
+
+        let encontrado = null;
+
+        options.forEach(option => {
+            if(option.text.toLowerCase().includes(busca) && busca !== ""){
+                if(encontrado === null){
+                    encontrado = option;
+                }
+            }
+        });
+
+        if(encontrado){
+            select.value = encontrado.value;
+        }else{
+            select.value = "";
+        }
+    });
+}
+
+buscarESelecionar("buscarUsuario", "usuarioSelect");
+buscarESelecionar("buscarLivro", "livroSelect");
+</script>
+
+</body>
+
+</html>

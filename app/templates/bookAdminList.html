@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Livros - ReadFlow</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bookAdminList.css') }}">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+
+<div class="page-layout">
+    <aside class="sidebar">
+        <div class="brand">
+            <i class="bi bi-book-half"></i>
+            <h2>ReadFlow</h2>
+        </div>
+        <nav class="menu">
+            <a href="{{ url_for('dashboardAdmin') }}">
+                <i class="bi bi-grid-1x2-fill"></i>
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('cadastrar_usuario') }}">
+                <i class="bi bi-people-fill"></i>
+                Usuários
+            </a>
+
+            <a href="{{ url_for('listarLivrosAdmin') }}" class="active">
+                <i class="bi bi-book-fill"></i>
+                Livros
+            </a>
+
+            <a href="{{ url_for('listarCategorias') }}">
+                <i class="bi bi-tags-fill"></i>
+                Categorias
+            </a>
+
+            <a href="{{ url_for('realizar_emprestimo') }}">
+                <i class="bi bi-arrow-left-right"></i>
+                Empréstimos
+            </a>
+
+            <a href="{{ url_for('relatorio') }}">
+                <i class="bi bi-bar-chart-fill"></i>
+                Relatórios
+            </a>
+
+        </nav>
+
+        <a href="{{ url_for('logout') }}" class="logout">
+            <i class="bi bi-box-arrow-right"></i>
+            Sair
+        </a>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div>
+                <h1>Livros</h1>
+                <p>Gerencie os livros cadastrados no acervo.</p>
+            </div>
+
+            <div class="user-info">
+                <i class="bi bi-person-circle"></i>
+                <span>{{ current_user.nome }}</span>
+            </div>
+        </header>
+
+        <section class="table-card">
+
+            <div class="table-header">
+                <h2>Lista de livros</h2>
+
+                <a href="{{ url_for('cadastrar_livro') }}" class="btn-new">
+                    <i class="bi bi-plus-circle-fill"></i>
+                    Novo Livro
+                </a>
+            </div>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Capa</th>
+                        <th>Título</th>
+                        <th>Autor</th>
+                        <th>Categoria</th>
+                        <th>Estoque</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for livro in livros %}
+
+                    <tr>
+                        <td>
+                            {% if livro.imagem %}
+                                <img class="book-thumb"
+                                     src="{{ url_for('static', filename='uploads/' + livro.imagem) }}"
+                                     alt="{{ livro.titulo }}">
+                            {% else %}
+                                <img class="book-thumb"
+                                     src="https://placehold.co/70x95?text=Sem+Capa"
+                                     alt="{{ livro.titulo }}">
+                            {% endif %}
+                        </td>
+
+                        <td>{{ livro.titulo }}</td>
+
+                        <td>{{ livro.autor }}</td>
+
+                        <td>{{ livro.categoria_rel.nome }}</td>
+
+                        <td>
+                            {{ livro.quantidade_disponivel }} /
+                            {{ livro.quantidade_total }}
+                        </td>
+
+                        <td class="actions">
+
+                            <a href="{{ url_for('editarLivro', id=livro.id) }}"
+                               class="btn-edit">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+
+                            <form method="POST"
+                                  action="{{ url_for('excluirLivro', id=livro.id) }}"
+                                  onsubmit="return confirm('Tem certeza que deseja excluir este livro?');">
+
+                                <button type="submit" class="btn-delete">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+                        <td colspan="6" class="empty">
+                            Nenhum livro cadastrado.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </section>
+    </main>
+</div>
+</body>
+</html>

@@ -1,4 +1,5 @@
-from app import app
+from app            import app
+from datetime       import date
 
 from flask import (
     render_template,
@@ -46,11 +47,11 @@ PAGE_LOGIN:              Final[str] = "login.html"
 PAGE_ADMIN_PANEL:        Final[str] = "dashboardAdmin.html"
 PAGE_CATEGORY_REGISTER:  Final[str] = "categoryRegister.html"
 PAGE_CATEGORY_LIST:      Final[str] = "categoryList.html"
-
-
 PAGE_USER_REGISTER:      Final[str] = "userRegister.html"
-PAGE_USER_LIST:          Final[str] = "userList.html"
+PAGE_BOOK_ADMIN_LIST:    Final[str] = "bookAdminList.html"
 
+
+PAGE_USER_LIST:          Final[str] = "userList.html"
 PAGE_BOOK_REGISTER:      Final[str] = "bookRegister.html"
 PAGE_BOOK_LIST:          Final[str] = "bookList.html"
 PAGE_BOOK_DETAILS:       Final[str] = "bookDetails.html"
@@ -254,20 +255,14 @@ def cadastrar_usuario():
 def cadastrar_livro():
 
     if ControllerUser.checkAdminPermission():
-
         form = LivroForm()
-
         checkForm(form)
-
         if form.validate_on_submit():
-
             form.saveBook()
-
             flash(
                 'Livro cadastrado com sucesso!',
                 'success'
             )
-
             return redirect(
                 url_for('listar_livros')
             )
@@ -385,33 +380,20 @@ def visualizar_livro(id):
         livro=livro
     )
 
-# ----- Empréstimo ----- 
-@app.route('/emprestimo/novo', methods=['GET', 'POST'])
+# ----- Livros (Administrador) -----
+@app.route('/admin/livros')
 @login_required
-def realizar_emprestimo():
+def listarLivrosAdmin():
 
     if ControllerUser.checkAdminPermission():
 
-        form = EmprestimoForm()
-
-        checkForm(form)
-
-        if form.validate_on_submit():
-
-            ControllerEmprestimo.realizarEmprestimo(form)
-
-            flash(
-                'Empréstimo realizado com sucesso!',
-                'success'
-            )
-
-            return redirect(
-                url_for('index')
-            )
+        livros = Livro.query.order_by(
+            Livro.titulo.asc()
+        ).all()
 
         return render_template(
-            PAGE_LOAN_REGISTER,
-            form=form
+            PAGE_BOOK_ADMIN_LIST,
+            livros=livros
         )
 
     flash(
@@ -423,7 +405,153 @@ def realizar_emprestimo():
         url_for('index')
     )
 
-# ----- Solicitacao de aquisição ----- 
+
+# ----- Editar Livro -----
+@app.route('/livro/editar/<int:id>', methods=['GET', 'POST'])
+@login_required
+def editarLivro(id):
+
+    if ControllerUser.checkAdminPermission():
+
+        livro = Livro.query.get_or_404(id)
+
+        form = LivroForm(obj=livro)
+
+        if request.method == 'GET':
+            form.categoria.data = livro.categoria_id
+
+        checkForm(form)
+
+        if form.validate_on_submit():
+
+            livro.isbn = form.isbn.data
+            livro.titulo = form.titulo.data
+            livro.autor = form.autor.data
+            livro.categoria_id = form.categoria.data
+            livro.editora = form.editora.data
+            livro.ano = form.ano.data
+            livro.quantidade_total = form.quantidade_total.data
+            livro.quantidade_disponivel = form.quantidade_disponivel.data
+            livro.resumo = form.resumo.data
+
+            form.saveImageForBook(livro)
+
+            db.session.commit()
+
+            flash(
+                'Livro atualizado com sucesso!',
+                'success'
+            )
+
+            return redirect(
+                url_for('listarLivrosAdmin')
+            )
+
+        return render_template(
+            PAGE_BOOK_REGISTER,
+            form=form,
+            editando=True,
+            livro=livro
+        )
+
+    flash(
+        'Acesso negado.',
+        'danger'
+    )
+
+    return redirect(
+        url_for('index')
+    )
+
+
+# ----- Excluir Livro -----
+@app.route('/livro/excluir/<int:id>', methods=['POST'])
+@login_required
+def excluirLivro(id):
+
+    if ControllerUser.checkAdminPermission():
+
+        livro = Livro.query.get_or_404(id)
+
+        db.session.delete(livro)
+        db.session.commit()
+
+        flash(
+            'Livro excluído com sucesso!',
+            'success'
+        )
+
+        return redirect(
+            url_for('listarLivrosAdmin')
+        )
+
+    flash(
+        'Acesso negado.',
+        'danger'
+    )
+
+    return redirect(
+        url_for('index')
+    )
+
+
+# ----- Empréstimo -----
+@app.route('/emprestimo/novo', methods=['GET', 'POST'])
+@login_required
+def realizar_emprestimo():
+
+    if ControllerUser.checkAdminPermission():
+
+        form = EmprestimoForm()
+
+        form.usuario_id.choices = [
+            (usuario.id, usuario.nome)
+            for usuario in Usuario.query.order_by(Usuario.nome).all()
+        ]
+
+        form.livro_id.choices = [
+            (livro.id, livro.titulo)
+            for livro in Livro.query.filter(
+                Livro.quantidade_disponivel > 0
+            ).order_by(Livro.titulo).all()
+        ]
+
+        checkForm(form)
+
+        if form.validate_on_submit():
+            resultado = ControllerEmprestimo.realizarEmprestimo(form)
+            if resultado:
+                flash(
+                    'Empréstimo realizado com sucesso!',
+                    'success'
+                )
+
+                return redirect(
+                    url_for('realizar_emprestimo')
+                )
+
+            flash(
+                'Não foi possível realizar o empréstimo. Verifique limite do usuário ou disponibilidade do livro.',
+                'danger'
+            )
+
+        emprestimos = Emprestimo.query.filter_by(
+            status='ATIVO'
+        ).order_by(
+            Emprestimo.data_prevista.asc()
+        ).all()
+
+        return render_template(
+            PAGE_LOAN_REGISTER,
+            form=form,
+            emprestimos=emprestimos
+        )
+
+    flash('Acesso negado.', 'danger')
+    return redirect(url_for('index'))
+
+
+# ----- Solicitacao de aquisição -----
 @app.route('/solicitacao/nova', methods=['GET', 'POST'])
 @login_required
 def solicitar_aquisicao():
@@ -453,7 +581,8 @@ def solicitar_aquisicao():
         form=form
     )
 
-# ----- Relatórios ----- 
+
+# ----- Relatórios -----
 @app.route('/relatorio')
 @login_required
 def relatorio():
@@ -465,6 +594,39 @@ def relatorio():
         return render_template(
             PAGE_REPORT,
             dados=dados
+        )
+
+    flash(
+        'Acesso negado.',
+        'danger'
+    )
+
+    return redirect(
+        url_for('index')
+    )
+
+# ----- Receber Livro -----
+@app.route('/emprestimo/devolver/<int:id>', methods=['POST'])
+@login_required
+def devolverLivro(id):
+
+    if ControllerUser.checkAdminPermission():
+
+        emprestimo = Emprestimo.query.get_or_404(id)
+
+        emprestimo.status = 'DEVOLVIDO'
+        emprestimo.data_devolucao = date.today()
+        emprestimo.livro.quantidade_disponivel += 1
+
+        db.session.commit()
+
+        flash(
+            'Livro recebido com sucesso!',
+            'success'
+        )
+
+        return redirect(
+            url_for('realizar_emprestimo')
         )
 
     flash(

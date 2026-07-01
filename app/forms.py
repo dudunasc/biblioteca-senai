@@ -2,8 +2,6 @@ from flask_wtf          import FlaskForm
 from flask_wtf.file     import FileField, FileAllowed
 import os
 from werkzeug.utils     import secure_filename
-from app                import app
-
 
 from wtforms import (
     StringField,
@@ -27,12 +25,11 @@ from app.models import (
     Categoria
 )
 
-from app import db, bcrypt
+from app import app, db, bcrypt
 
 
 # LOGIN
 class LoginForm(FlaskForm):
-
     email = StringField(
         'Email',
         validators=[
@@ -67,7 +64,6 @@ class LoginForm(FlaskForm):
 
 # USUÁRIO
 class UsuarioForm(FlaskForm):
-
     nome = StringField(
         'Nome',
         validators=[
@@ -145,7 +141,6 @@ class UsuarioForm(FlaskForm):
 
 # CATEGORIA
 class CategoriaForm(FlaskForm):
-
     nome = StringField(
         'Nome da categoria',
         validators=[
@@ -166,7 +161,6 @@ class CategoriaForm(FlaskForm):
 
 # LIVRO
 class LivroForm(FlaskForm):
-
     isbn = StringField(
         'ISBN',
         validators=[
@@ -244,19 +238,24 @@ class LivroForm(FlaskForm):
     submit = SubmitField('Salvar')
 
     def __init__(self, *args, **kwargs):
+
         super(LivroForm, self).__init__(*args, **kwargs)
 
         self.categoria.choices = [
             (categoria.id, categoria.nome)
-            for categoria in Categoria.query.order_by(Categoria.nome).all()
+            for categoria in Categoria.query.order_by(
+                Categoria.nome
+            ).all()
         ]
 
-    def saveBook(self):
-        nome_imagem = None
-
+    def saveImageForBook(self, livro):
         if self.imagem.data:
+
             arquivo = self.imagem.data
-            nome_imagem = secure_filename(arquivo.filename)
+
+            nome_imagem = secure_filename(
+                arquivo.filename
+            )
 
             caminho = os.path.join(
                 app.root_path,
@@ -265,6 +264,10 @@ class LivroForm(FlaskForm):
             )
 
             arquivo.save(caminho)
+
+            livro.imagem = nome_imagem
+
+    def saveBook(self):
 
         livro = Livro(
             isbn=self.isbn.data,
@@ -275,9 +278,10 @@ class LivroForm(FlaskForm):
             ano=self.ano.data,
             quantidade_total=self.quantidade_total.data,
             quantidade_disponivel=self.quantidade_disponivel.data,
-            resumo=self.resumo.data,
-            imagem=nome_imagem
+            resumo=self.resumo.data
         )
+
+        self.saveImageForBook(livro)
 
         db.session.add(livro)
         db.session.commit()
@@ -287,7 +291,6 @@ class LivroForm(FlaskForm):
 
 # EMPRÉSTIMO
 class EmprestimoForm(FlaskForm):
-
     usuario_id = SelectField(
         'Usuário',
         coerce=int,

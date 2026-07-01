@@ -17,6 +17,7 @@ class Usuario(db.Model, UserMixin):
     perfil     = db.Column(db.String(20), nullable=False)
     primeiro_acesso = db.Column(db.Boolean, nullable=False, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    emprestimos = db.relationship('Emprestimo', backref='usuario', lazy=True)
 
 
 class Livro(db.Model):
@@ -31,12 +32,7 @@ class Livro(db.Model):
     quantidade_disponivel  = db.Column(db.Integer, nullable=False)
     resumo                 = db.Column(db.Text)
     imagem                 = db.Column(db.String(200))
-
-    emprestimos = db.relationship(
-        'Emprestimo',
-        backref='livro',
-        lazy=True
-    )
+    emprestimos = db.relationship('Emprestimo', backref='livro', lazy=True)
 
 class Emprestimo(db.Model):
     id               = db.Column(db.Integer, primary_key=True)

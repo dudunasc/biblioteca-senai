@@ -11,7 +11,6 @@ from datetime import (
     timedelta
 )
 
-
 class ControllerEmprestimo:
 
     @staticmethod

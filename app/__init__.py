@@ -34,7 +34,6 @@ login_manager.login_message_category = 'warning'
 bcrypt = Bcrypt(app)
 
 from app.routes import *
-
 from app.models import Usuario
 from app.models import Livro
 from app.models import Categoria

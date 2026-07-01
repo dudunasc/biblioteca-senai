@@ -36,21 +36,17 @@
         Conectando pessoas ao conhecimento.
     </p>
 
-    <div class="pesquisa-area">
-        <div class="pesquisa">
-            <input
-                type="text"
-                placeholder="Pesquisar por título, autor ou ISBN...">
+    <form class="pesquisa" method="GET">
+    <input
+        type="text"
+        name="busca"
+        value="{{ request.args.get('busca','') }}"
+        placeholder="Pesquisar por título, autor ou ISBN...">
 
-            <button>
-                <i class="bi bi-search"></i>
-            </button>
-        </div>
-
-        <a href="{{ url_for('listar_livros') }}" class="ver-acervo">
-            Ver todo o acervo →
-        </a>
-    </div>
+    <button type="submit">
+        <i class="bi bi-search"></i>
+    </button>
+</form>
 </section>
 
 <section class="livros">

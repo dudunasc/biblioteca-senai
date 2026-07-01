@@ -1,5 +1,6 @@
 from app            import app
 from datetime       import date
+from typing         import Final
 
 from flask import (
     render_template,
@@ -8,8 +9,6 @@ from flask import (
     request,
     flash
 )
-
-from typing import Final
 
 from app.models import (
     db,
@@ -49,21 +48,16 @@ PAGE_CATEGORY_REGISTER:  Final[str] = "categoryRegister.html"
 PAGE_CATEGORY_LIST:      Final[str] = "categoryList.html"
 PAGE_USER_REGISTER:      Final[str] = "userRegister.html"
 PAGE_BOOK_ADMIN_LIST:    Final[str] = "bookAdminList.html"
-
-
-PAGE_USER_LIST:          Final[str] = "userList.html"
+PAGE_LOAN_REGISTER:      Final[str] = "loanRegister.html"
 PAGE_BOOK_REGISTER:      Final[str] = "bookRegister.html"
 PAGE_BOOK_LIST:          Final[str] = "bookList.html"
 PAGE_BOOK_DETAILS:       Final[str] = "bookDetails.html"
 
-PAGE_LOAN_REGISTER:      Final[str] = "loanRegister.html"
-
+PAGE_USER_LIST:          Final[str] = "userList.html"
 PAGE_STUDENT_PANEL:      Final[str] = "studentPanel.html"
 PAGE_TEACHER_PANEL:      Final[str] = "teacherPanel.html"
-
 PAGE_REQUEST_REGISTER:   Final[str] = "requestRegister.html"
 PAGE_REQUEST_LIST:       Final[str] = "requestList.html"
-
 PAGE_REPORT:             Final[str] = "report.html"
 
 
@@ -81,9 +75,21 @@ def checkForm(form):
 @app.route('/')
 def index():
 
-    livros = Livro.query.order_by(
-        Livro.titulo
-    ).limit(8).all()
+    busca = request.args.get('busca', '')
+
+    if busca:
+        livros = Livro.query.filter(
+            (Livro.titulo.ilike(f'%{busca}%')) |
+            (Livro.autor.ilike(f'%{busca}%')) |
+            (Livro.isbn.ilike(f'%{busca}%'))
+        ).order_by(
+            Livro.titulo
+        ).all()
+
+    else:
+        livros = Livro.query.order_by(
+            Livro.titulo
+        ).limit(8).all()
 
     return render_template(
         HOME_PAGE,
@@ -176,24 +182,6 @@ def dashboardAdmin():
 
     flash('Acesso negado.', 'danger')
     return redirect(url_for('index'))
-
-# ----- Dashboard Professor ----- 
-@app.route('/professor')
-@login_required
-def painel_professor():
-
-    return render_template(
-        PAGE_TEACHER_PANEL
-    )
-
-# ----- Dashboard Aluno ----- 
-@app.route('/aluno')
-@login_required
-def painel_aluno():
-
-    return render_template(
-        PAGE_STUDENT_PANEL
-    )
 
 # ----- Logout ----- 
 @app.route('/usuario/sair')
